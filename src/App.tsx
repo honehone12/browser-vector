@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ai from "./lib/ai/ai";
 import { Siglip } from "./lib/ai/siglip";
-import AiStatus from "./lib/components/AiStatus";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
 
@@ -22,12 +21,32 @@ export default function App() {
     }
   }
 
-  async function handleImg(imgBlob: Blob) {
+  async function handleImg(form: FormData) {
+    if (!aiInitialized || pending) {
+      return;
+    }
+
+    setPending(true);
     setResult(null);
-    const tensor = await ai.generateVector(imgBlob);
-    const l = tensor.tolist();
-    const s = JSON.stringify(l, null, 2);
-    setResult(s);
+
+    try {
+      const file = form.get("file") as File | null;
+      if (!file) {
+        throw new Error("file is required");
+      }
+      if (file.type !== "image/jpeg" && file.type !== "image/png") {
+        throw new Error("unsupported file type");
+      }
+
+      const tensor = await ai.generateVector(file);
+      const l = tensor.tolist();
+      const s = JSON.stringify(l, null, 2);
+      setResult(s);
+    } catch (e) {
+      console.error(e);
+    }
+
+    setPending(false);
   }
 
   useEffect(() => {
@@ -39,15 +58,18 @@ export default function App() {
       <div className="text-center">
         <h1 className="text-4xl">Browser Vector</h1>
       </div>
-      <div className="mt-10">
-        <AiStatus aiStatus={aiStatus} />
+      <div className="hero mt-10">
+        <div className="text-center">
+          <div className="card outline outline-primary max-w-80 px-10 py-5">
+            <p className="text-xl">{aiStatus}</p>
+          </div>
+        </div>
       </div>
       <div className="mt-20">
         <FileForm
           aiInitialized={aiInitialized}
-          handleImg={handleImg}
+          action={handleImg}
           pending={pending}
-          setPending={setPending}
         />
       </div>
       {pending && (

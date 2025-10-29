@@ -1,8 +1,7 @@
 interface Props {
   aiInitialized: boolean;
-  handleImg: (imgBlob: Blob) => Promise<void>;
+  action: (from: FormData) => Promise<void>;
   pending: boolean;
-  setPending: (pending: boolean) => void;
 }
 
 export default function FileForm(p: Props) {
@@ -10,34 +9,10 @@ export default function FileForm(p: Props) {
     return p.aiInitialized && !p.pending;
   }
 
-  async function action(form: FormData): Promise<void> {
-    if (!actionAvailable()) {
-      return;
-    }
-
-    p.setPending(true);
-
-    try {
-      const file = form.get("file") as File | null;
-      if (!file) {
-        throw new Error("file is required");
-      }
-      if (file.type !== "image/jpeg" && file.type !== "image/png") {
-        throw new Error("unsupported file type");
-      }
-
-      await p.handleImg(file);
-    } catch (e) {
-      console.error(e);
-    }
-
-    p.setPending(false);
-  }
-
   return (
     <div className="hero">
       <div className="hero-content text-center">
-        <form action={action}>
+        <form action={p.action}>
           <label htmlFor="file-file">
             <h2 className="text-xl">Select a Image File</h2>
           </label>
