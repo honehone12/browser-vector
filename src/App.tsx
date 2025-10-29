@@ -3,6 +3,7 @@ import ai from "./lib/ai/ai";
 import { Siglip } from "./lib/ai/siglip";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
+import { Base64 } from "js-base64";
 
 export default function App() {
   const [aiInitialized, seAitInitialized] = useState(false);
@@ -38,8 +39,8 @@ export default function App() {
         }
 
         const tensor = await ai.generateVector(file);
-        const l = tensor.tolist();
-        const s = JSON.stringify(l, null, 2);
+        const b = new Uint8Array(tensor);
+        const s = Base64.fromUint8Array(b);
         setResult(s);
       } catch (e) {
         console.error(e);
