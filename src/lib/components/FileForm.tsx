@@ -1,21 +1,21 @@
-import { useState } from "react";
-
 interface Props {
   aiInitialized: boolean;
   handleImg: (imgBlob: Blob) => Promise<void>;
+  pending: boolean;
+  setPending: (pending: boolean) => void;
 }
 
-function FileForm(p: Props) {
+export default function FileForm(p: Props) {
   function actionAvailable(): boolean {
-    return p.aiInitialized && !pending;
+    return p.aiInitialized && !p.pending;
   }
 
   async function action(form: FormData): Promise<void> {
-    if (pending) {
+    if (!actionAvailable()) {
       return;
     }
 
-    setPending(true);
+    p.setPending(true);
 
     try {
       const file = form.get("file") as File | null;
@@ -31,10 +31,8 @@ function FileForm(p: Props) {
       console.error(e);
     }
 
-    setPending(false);
+    p.setPending(false);
   }
-
-  const [pending, setPending] = useState(false);
 
   return (
     <div className="hero">
@@ -63,5 +61,3 @@ function FileForm(p: Props) {
     </div>
   );
 }
-
-export default FileForm;

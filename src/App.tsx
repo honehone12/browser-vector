@@ -3,8 +3,14 @@ import ai from "./lib/ai/ai";
 import { Siglip } from "./lib/ai/siglip";
 import AiStatus from "./lib/components/AiStatus";
 import FileForm from "./lib/components/FileForm";
+import Loading from "./lib/components/Loading";
 
-function App() {
+export default function App() {
+  const [aiInitialized, seAitInitialized] = useState(false);
+  const [aiStatus, setAiStatus] = useState("initializing ai model");
+  const [pending, setPending] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+
   async function init() {
     try {
       await ai.init(new Siglip());
@@ -17,11 +23,12 @@ function App() {
   }
 
   async function handleImg(imgBlob: Blob) {
+    setResult(null);
     const tensor = await ai.generateVector(imgBlob);
+    const l = tensor.tolist();
+    const s = JSON.stringify(l, null, 2);
+    setResult(s);
   }
-
-  const [aiInitialized, seAitInitialized] = useState(false);
-  const [aiStatus, setAiStatus] = useState("initializing");
 
   useEffect(() => {
     init();
@@ -29,12 +36,30 @@ function App() {
 
   return (
     <div className="min-h-screen py-20">
-      <AiStatus aiStatus={aiStatus} />
-      <div className="mt-20">
-        <FileForm aiInitialized={aiInitialized} handleImg={handleImg} />
+      <div className="text-center">
+        <h1 className="text-4xl">Browser Vector</h1>
       </div>
+      <div className="mt-10">
+        <AiStatus aiStatus={aiStatus} />
+      </div>
+      <div className="mt-20">
+        <FileForm
+          aiInitialized={aiInitialized}
+          handleImg={handleImg}
+          pending={pending}
+          setPending={setPending}
+        />
+      </div>
+      {pending && (
+        <div className="mt-20">
+          <Loading />
+        </div>
+      )}
+      {result && (
+        <div className="text-center mt-20 px-10">
+          <p>{result}</p>
+        </div>
+      )}
     </div>
   );
 }
-
-export default App;
