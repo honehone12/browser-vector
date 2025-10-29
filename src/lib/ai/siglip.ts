@@ -11,10 +11,12 @@ export class Siglip implements AiSelector {
   }
 
   public model() {
-    return SiglipVisionModel.from_pretrained(this.fullName());
+    return SiglipVisionModel.from_pretrained(this.fullName(), {
+      device: "webgpu",
+    });
   }
 
   public processor() {
-    return AutoProcessor.from_pretrained(this.fullName());
+    return AutoProcessor.from_pretrained(this.fullName(), { device: "webgpu" });
   }
 }

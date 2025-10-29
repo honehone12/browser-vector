@@ -73,7 +73,7 @@ export default function App() {
         />
       </div>
       {pending && (
-        <div className="mt-20">
+        <div className="text-center mt-20">
           <Loading />
         </div>
       )}
