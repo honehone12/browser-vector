@@ -3,6 +3,7 @@ import ai from "./lib/ai/ai";
 import { Siglip } from "./lib/ai/siglip";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
+import { flushSync } from "react-dom";
 
 export default function App() {
   const [aiInitialized, seAitInitialized] = useState(false);
@@ -26,8 +27,10 @@ export default function App() {
       return;
     }
 
-    setPending(true);
-    setResult(null);
+    flushSync(() => {
+      setPending(true);
+      setResult(null);
+    });
 
     try {
       const file = form.get("file") as File | null;
