@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import ai from "./lib/ai/ai";
 import { Siglip } from "./lib/ai/siglip";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
-import { flushSync } from "react-dom";
 
 export default function App() {
   const [aiInitialized, seAitInitialized] = useState(false);
   const [aiStatus, setAiStatus] = useState("initializing ai model");
-  const [pending, setPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<string | null>(null);
 
   async function init() {
@@ -22,34 +21,30 @@ export default function App() {
     }
   }
 
-  async function handleImg(form: FormData) {
-    if (!aiInitialized || pending) {
+  function handleImg(form: FormData) {
+    if (!aiInitialized || isPending) {
       return;
     }
 
-    flushSync(() => {
-      setPending(true);
-      setResult(null);
+    setResult(null);
+    startTransition(async () => {
+      try {
+        const file = form.get("file") as File | null;
+        if (!file) {
+          throw new Error("file is required");
+        }
+        if (file.type !== "image/jpeg" && file.type !== "image/png") {
+          throw new Error("unsupported file type");
+        }
+
+        const tensor = await ai.generateVector(file);
+        const l = tensor.tolist();
+        const s = JSON.stringify(l, null, 2);
+        setResult(s);
+      } catch (e) {
+        console.error(e);
+      }
     });
-
-    try {
-      const file = form.get("file") as File | null;
-      if (!file) {
-        throw new Error("file is required");
-      }
-      if (file.type !== "image/jpeg" && file.type !== "image/png") {
-        throw new Error("unsupported file type");
-      }
-
-      const tensor = await ai.generateVector(file);
-      const l = tensor.tolist();
-      const s = JSON.stringify(l, null, 2);
-      setResult(s);
-    } catch (e) {
-      console.error(e);
-    }
-
-    setPending(false);
   }
 
   useEffect(() => {
@@ -72,10 +67,10 @@ export default function App() {
         <FileForm
           aiInitialized={aiInitialized}
           action={handleImg}
-          pending={pending}
+          pending={isPending}
         />
       </div>
-      {pending && (
+      {isPending && (
         <div className="text-center mt-20">
           <Loading />
         </div>

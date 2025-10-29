@@ -1,6 +1,6 @@
 interface Props {
   aiInitialized: boolean;
-  action: (from: FormData) => Promise<void>;
+  action: (from: FormData) => void | Promise<void>;
   pending: boolean;
 }
 
