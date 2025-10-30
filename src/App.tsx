@@ -1,6 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
 import ai from "./lib/ai/ai";
-import { Siglip } from "./lib/ai/siglip";
+import { Siglip2 } from "./lib/ai/siglip2";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
 import { Base64 } from "js-base64";
@@ -13,7 +13,7 @@ export default function App() {
 
   async function init() {
     try {
-      await ai.init(new Siglip());
+      await ai.init(new Siglip2());
       seAitInitialized(ai.initialized());
       setAiStatus(ai.name() ?? "unknown");
     } catch (e) {
