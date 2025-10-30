@@ -1,5 +1,24 @@
-import { AutoProcessor, CLIPPreTrainedModel } from "@huggingface/transformers";
+import {
+  AutoProcessor,
+  CLIPPreTrainedModel,
+  PreTrainedModel,
+} from "@huggingface/transformers";
 import type { AiSelector } from "./ai-selector";
+
+class Siglip2PreTrainedModel extends PreTrainedModel {}
+
+class Siglip2Model extends Siglip2PreTrainedModel {}
+
+class Siglip2TextModel extends Siglip2PreTrainedModel {
+  /** @type {typeof PreTrainedModel.from_pretrained} */
+  static async from_pretrained(pretrained_model_name_or_path, options = {}) {
+    return super.from_pretrained(pretrained_model_name_or_path, {
+      ...options,
+      // Update default model file name if not provided
+      model_file_name: options.model_file_name ?? "text_model",
+    });
+  }
+}
 
 class Siglip2VisionModel extends CLIPPreTrainedModel {
   /** @type {typeof PreTrainedModel.from_pretrained} */
