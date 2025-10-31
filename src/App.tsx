@@ -11,8 +11,17 @@ export default function App() {
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<string | null>(null);
 
+  function webgpuSupported(): boolean {
+    return navigator.gpu ? true : false;
+  }
+
   async function init() {
     try {
+      if (!webgpuSupported()) {
+        setAiStatus("wgpu is not supported");
+        return;
+      }
+
       await ai.init(new Siglip2());
       seAitInitialized(ai.initialized());
       setAiStatus(ai.name() ?? "unknown");
