@@ -13,17 +13,19 @@ export default function FileForm(p: Props) {
     <div className="hero">
       <div className="hero-content text-center">
         <form action={p.action}>
-          <label htmlFor="file-file">
-            <h2 className="text-xl">Select a Image File</h2>
-            <input
-              required
-              id="file-file"
-              name="file"
-              type="file"
-              accept="image/jpeg, image/png"
-              className="file-input file-input-primary mt-5"
-            />
-          </label>
+          <div>
+            <label htmlFor="file-file">
+              <h2 className="text-xl">Select a Image File</h2>
+              <input
+                required
+                id="file-file"
+                name="file"
+                type="file"
+                accept="image/jpeg, image/png"
+                className="file-input file-input-primary w-90 mt-5"
+              />
+            </label>
+          </div>
           <button
             type="submit"
             disabled={!actionAvailable()}

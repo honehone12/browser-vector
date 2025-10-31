@@ -49,7 +49,24 @@ export default function App() {
 
         const tensor = await ai.generateVector(file);
         const b = new Uint8Array(tensor);
-        const s = Base64.fromUint8Array(b, true);
+        const enc = Base64.fromUint8Array(b, true);
+
+        const url = new URL("http://localhost:8080/anime-search");
+        const body = JSON.stringify({
+          function_id: 5,
+          item_type: 1,
+          vector: enc,
+        });
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body,
+        });
+        const s = await res.text();
+
         setResult(s);
       } catch (e) {
         console.error(e);
