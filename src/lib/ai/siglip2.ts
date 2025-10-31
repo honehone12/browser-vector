@@ -2,16 +2,21 @@ import {
   AutoProcessor,
   CLIPPreTrainedModel,
   PreTrainedModel,
+  type PretrainedModelOptions,
 } from "@huggingface/transformers";
 import type { AiSelector } from "./ai-selector";
 
 class Siglip2PreTrainedModel extends PreTrainedModel {}
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Siglip2Model extends Siglip2PreTrainedModel {}
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Siglip2TextModel extends Siglip2PreTrainedModel {
-  /** @type {typeof PreTrainedModel.from_pretrained} */
-  static async from_pretrained(pretrained_model_name_or_path, options = {}) {
+  static async from_pretrained(
+    pretrained_model_name_or_path: string,
+    options: PretrainedModelOptions = {},
+  ) {
     return super.from_pretrained(pretrained_model_name_or_path, {
       ...options,
       // Update default model file name if not provided
@@ -21,13 +26,13 @@ class Siglip2TextModel extends Siglip2PreTrainedModel {
 }
 
 class Siglip2VisionModel extends CLIPPreTrainedModel {
-  /** @type {typeof PreTrainedModel.from_pretrained} */
-  static async from_pretrained(pretrained_model_name_or_path, options = {}) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  static async from_pretrained(
+    pretrained_model_name_or_path: string,
+    options: PretrainedModelOptions = {},
+  ) {
     return super.from_pretrained(pretrained_model_name_or_path, {
       ...options,
       // Update default model file name if not provided
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       model_file_name: options.model_file_name ?? "vision_model",
     });
   }
