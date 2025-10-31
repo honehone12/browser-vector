@@ -39,21 +39,39 @@ class Siglip2VisionModel extends CLIPPreTrainedModel {
 }
 
 export class Siglip2 implements AiSelector {
-  public name() {
-    return "siglip2-base-patch16-512";
+  public display() {
+    return "siglip2-base-patch16-512-gpu";
   }
 
-  public fullName() {
+  public name() {
     return "onnx-community/siglip2-base-patch16-512-ONNX";
   }
 
   public model() {
-    return Siglip2VisionModel.from_pretrained(this.fullName(), {
+    return Siglip2VisionModel.from_pretrained(this.name(), {
       device: "webgpu",
     });
   }
 
   public processor() {
-    return AutoProcessor.from_pretrained(this.fullName(), { device: "webgpu" });
+    return AutoProcessor.from_pretrained(this.name(), { device: "webgpu" });
+  }
+}
+
+export class Siglip2Cpu implements AiSelector {
+  public display() {
+    return "siglip2-base-patch16-512-cpu";
+  }
+
+  public name() {
+    return "onnx-community/siglip2-base-patch16-512-ONNX";
+  }
+
+  public model() {
+    return Siglip2VisionModel.from_pretrained(this.name());
+  }
+
+  public processor() {
+    return AutoProcessor.from_pretrained(this.name());
   }
 }

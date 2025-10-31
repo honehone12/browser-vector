@@ -1,6 +1,6 @@
 import { useEffect, useState, useTransition } from "react";
 import ai from "./lib/ai/ai";
-import { Siglip2 } from "./lib/ai/siglip2";
+import { Siglip2, Siglip2Cpu } from "./lib/ai/siglip2";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
 import { Base64 } from "js-base64";
@@ -17,12 +17,8 @@ export default function App() {
 
   async function init() {
     try {
-      if (!webgpuSupported()) {
-        setAiStatus("wgpu is not supported");
-        return;
-      }
-
-      await ai.init(new Siglip2());
+      const selector = webgpuSupported() ? new Siglip2() : new Siglip2Cpu();
+      await ai.init(selector);
       seAitInitialized(ai.initialized());
       setAiStatus(ai.name() ?? "unknown");
     } catch (e) {
@@ -85,7 +81,7 @@ export default function App() {
       </div>
       <div className="hero mt-10">
         <div className="text-center">
-          <div className="card outline outline-primary max-w-80 px-10 py-5">
+          <div className="card outline outline-primary max-w-100 px-10 py-5">
             <p className="text-xl">{aiStatus}</p>
           </div>
         </div>

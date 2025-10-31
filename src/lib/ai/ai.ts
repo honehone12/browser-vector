@@ -26,7 +26,7 @@ class Ai {
   }
 
   public name(): string | null {
-    return (this, this._selector ? this._selector.name() : null);
+    return (this, this._selector ? this._selector.display() : null);
   }
 
   public async generateVector(imgBlob: Blob): Promise<Tensor> {
