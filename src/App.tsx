@@ -40,7 +40,7 @@ export default function App() {
 
         const tensor = await ai.generateVector(file);
         const b = new Uint8Array(tensor);
-        const s = Base64.fromUint8Array(b);
+        const s = Base64.fromUint8Array(b, true);
         setResult(s);
       } catch (e) {
         console.error(e);
