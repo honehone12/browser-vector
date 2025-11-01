@@ -36,7 +36,7 @@ export default function App() {
         if (!file) {
           throw new Error("file is required");
         }
-        if (file.type !== "image/jpeg" && file.type !== "image/png") {
+        if (file.type !== "image/jpeg") {
           throw new Error("unsupported file type");
         }
 

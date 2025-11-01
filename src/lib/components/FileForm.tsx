@@ -21,7 +21,7 @@ export default function FileForm(p: Props) {
                 id="file-file"
                 name="file"
                 type="file"
-                accept="image/jpeg, image/png"
+                accept="image/jpeg"
                 className="file-input file-input-primary w-90 mt-5"
               />
             </label>
