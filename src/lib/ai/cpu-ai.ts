@@ -1,14 +1,13 @@
-import type { Tensor } from "@huggingface/transformers";
 import type { AiDevice } from "./ai-device";
 import type { ModelInitializer } from "./model-initializer";
 import { WorkerCommand, type WorkerResult } from "./worker-message";
 
-type ResolveTensor = (value: Tensor) => void;
+type ResolveVector = (value: string) => void;
 type Resolve = () => void;
 type Reject = (reason: string) => void;
 
 interface Callbacks {
-  onSuccess: Resolve | ResolveTensor;
+  onSuccess: Resolve | ResolveVector;
   onFail: Reject;
 }
 
@@ -49,8 +48,8 @@ export class CpuAi implements AiDevice {
         (callbacks.onSuccess as Resolve)();
         break;
       case WorkerCommand.generate:
-        if (result.tensor) {
-          (callbacks.onSuccess as ResolveTensor)(result.tensor);
+        if (result.vector) {
+          (callbacks.onSuccess as ResolveVector)(result.vector);
         } else {
           callbacks.onFail("empty result");
         }
@@ -96,12 +95,12 @@ export class CpuAi implements AiDevice {
     return this._initializer ? this._initializer.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<Tensor> {
+  public async generateVector(blob: Blob): Promise<string> {
     if (!this._initialized || !this._initializer) {
       throw new Error("cpu ai is not initialized");
     }
 
-    return new Promise<Tensor>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const callbacks = {
         onSuccess: resolve,
         onFail: reject,

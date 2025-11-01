@@ -6,6 +6,7 @@ import {
 } from "@huggingface/transformers";
 import type { ModelInitializer } from "./model-initializer";
 import type { AiDevice } from "./ai-device";
+import { Base64 } from "js-base64";
 
 export class GpuAi implements AiDevice {
   private _initializer: ModelInitializer | null = null;
@@ -38,7 +39,7 @@ export class GpuAi implements AiDevice {
     return this._initializer ? this._initializer.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<Tensor> {
+  public async generateVector(blob: Blob): Promise<string> {
     if (!this._initializer || !this._model || !this._processor) {
       throw new Error("gpu ai is not initialized");
     }
@@ -53,6 +54,9 @@ export class GpuAi implements AiDevice {
     // for int8
     const scale = 127;
     const quantized = raw.mul(scale).round();
-    return quantized;
+    const b = new Uint8Array(quantized);
+    const enc = Base64.fromUint8Array(b, true);
+
+    return enc;
   }
 }

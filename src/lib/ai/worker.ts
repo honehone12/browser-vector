@@ -8,6 +8,7 @@ import { WorkerCommand, type WorkerParams } from "./worker-message";
 import { Siglip2CpuInitializer } from "./siglip2";
 import { SiglipCpuInitializer } from "./siglip";
 import type { ModelInitializer } from "./model-initializer";
+import { Base64 } from "js-base64";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;
@@ -57,11 +58,13 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
           // for int8
           const scale = 127;
           const quantized = raw.mul(scale).round();
+          const b = new Uint8Array(quantized);
+          const enc = Base64.fromUint8Array(b, true);
 
           self.postMessage({
             id: msg.id,
             command: msg.command,
-            tensor: quantized,
+            vector: enc,
           });
         }
         break;

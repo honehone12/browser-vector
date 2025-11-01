@@ -1,5 +1,3 @@
-import type { Tensor } from "@huggingface/transformers";
-
 export const enum WorkerCommand {
   initialize = 1,
   generate,
@@ -16,6 +14,6 @@ export interface WorkerParams extends WorkerMessage {
 }
 
 export interface WorkerResult extends WorkerMessage {
-  tensor?: Tensor | undefined;
+  vector?: string | undefined;
   error?: string | undefined;
 }

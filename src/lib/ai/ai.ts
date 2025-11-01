@@ -1,4 +1,3 @@
-import type { Tensor } from "@huggingface/transformers";
 import type { AiDevice } from "./ai-device";
 import type { ModelInitializer } from "./model-initializer";
 import { GpuAi } from "./gpu-ai";
@@ -20,7 +19,7 @@ class Ai {
     return this._device ? this._device.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<Tensor> {
+  public async generateVector(blob: Blob): Promise<string> {
     if (!this._device) {
       throw new Error("ai device is not initialized");
     }

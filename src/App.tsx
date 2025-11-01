@@ -2,7 +2,6 @@ import { useEffect, useState, useTransition } from "react";
 import { Siglip2GpuInitializer, Siglip2CpuInitializer } from "./lib/ai/siglip2";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
-import { Base64 } from "js-base64";
 import ai from "./lib/ai/ai";
 
 export default function App() {
@@ -41,16 +40,14 @@ export default function App() {
           throw new Error("unsupported file type");
         }
 
-        const tensor = await ai.generateVector(file);
-        const b = new Uint8Array(tensor);
-        const enc = Base64.fromUint8Array(b, true);
-        console.log(enc);
+        const vector = await ai.generateVector(file);
+        console.log(vector);
 
         const url = new URL("http://localhost:8080/anime-search");
         const body = JSON.stringify({
           function_id: 5,
           item_type: 1,
-          vector: enc,
+          vector,
         });
 
         const res = await fetch(url, {
