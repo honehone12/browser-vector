@@ -4,7 +4,7 @@ import {
   SiglipTextModel,
   SiglipVisionModel,
 } from "@huggingface/transformers";
-import type { AiSelector } from "./ai-selector";
+import type { AiSelector } from "./model-initializer";
 
 class Siglip2PreTrainedModel extends SiglipPreTrainedModel {}
 
@@ -16,13 +16,17 @@ class Siglip2TextModel extends SiglipTextModel {}
 
 class Siglip2VisionModel extends SiglipVisionModel {}
 
-export class Siglip2 implements AiSelector {
+export class Siglip2GpuInitializer implements AiSelector {
   public display() {
     return "siglip2-base-patch16-512-gpu";
   }
 
   public name() {
     return "onnx-community/siglip2-base-patch16-512-ONNX";
+  }
+
+  public useCpu(): boolean {
+    return false;
   }
 
   public model() {
@@ -36,13 +40,17 @@ export class Siglip2 implements AiSelector {
   }
 }
 
-export class Siglip2Cpu implements AiSelector {
+export class Siglip2CpuInitializer implements AiSelector {
   public display() {
     return "siglip2-base-patch16-512-cpu";
   }
 
   public name() {
     return "onnx-community/siglip2-base-patch16-512-ONNX";
+  }
+
+  public useCpu(): boolean {
+    return true;
   }
 
   public model() {

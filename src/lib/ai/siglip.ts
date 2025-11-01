@@ -1,13 +1,17 @@
 import { AutoProcessor, SiglipVisionModel } from "@huggingface/transformers";
-import type { AiSelector } from "./ai-selector";
+import type { ModelInitializer } from "./model-initializer";
 
-export class Siglip implements AiSelector {
+export class SiglipGpuInitializer implements ModelInitializer {
   public display() {
     return "siglip-base-patch16-512-gpu";
   }
 
   public name() {
     return "Xenova/siglip-base-patch16-512";
+  }
+
+  public useCpu(): boolean {
+    return false;
   }
 
   public model() {
@@ -21,13 +25,17 @@ export class Siglip implements AiSelector {
   }
 }
 
-export class SiglipCpu implements AiSelector {
+export class SiglipCpuInitializer implements ModelInitializer {
   public display() {
     return "siglip-base-patch16-512-cpu";
   }
 
   public name() {
     return "Xenova/siglip-base-patch16-512";
+  }
+
+  public useCpu(): boolean {
+    return true;
   }
 
   public model() {
