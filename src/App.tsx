@@ -13,7 +13,7 @@ export default function App() {
 
   async function init() {
     try {
-      const initializer = navigator.gpu
+      const initializer = navigator.gpu?.requestAdapter().features
         ? new Siglip2GpuInitializer()
         : new Siglip2CpuInitializer();
       await ai.init(initializer);

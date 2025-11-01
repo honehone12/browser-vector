@@ -12,24 +12,18 @@ export class GpuAi implements AiDevice {
   private _model: PreTrainedModel | null = null;
   private _processor: Processor | null = null;
 
-  private constructor(
-    initializer: ModelInitializer,
-    model: PreTrainedModel,
-    processor: Processor,
-  ) {
-    this._initializer = initializer;
-    this._model = model;
-    this._processor = processor;
-  }
+  public async init(initializer: ModelInitializer): Promise<void> {
+    if (this.initialized()) {
+      return;
+    }
 
-  public static async init(initializer: ModelInitializer): Promise<GpuAi> {
     if (initializer.useCpu()) {
       throw new Error("unexpected cpu model");
     }
 
-    const model = await initializer.model();
-    const processor = await initializer.processor();
-    return new GpuAi(initializer, model, processor);
+    this._initializer = initializer;
+    this._model = await this._initializer.model();
+    this._processor = await this._initializer.processor();
   }
 
   public initialized(): boolean {
@@ -46,17 +40,16 @@ export class GpuAi implements AiDevice {
 
   public async generateVector(blob: Blob): Promise<Tensor> {
     if (!this._initializer || !this._model || !this._processor) {
-      throw new Error("ai is not initialized yet");
+      throw new Error("gpu ai is not initialized");
     }
 
     const img = await RawImage.fromBlob(blob);
     const rgb = img.rgb();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const inputs = await this._processor(rgb);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { pooler_output } = await this._model(inputs);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    const raw: Tensor = pooler_output.normalize().squeeze(0);
+    const { pooler_output }: { pooler_output: Tensor } =
+      await this._model(inputs);
+    const raw = pooler_output.normalize().squeeze(0);
     // for int8
     const scale = 127;
     const quantized = raw.mul(scale).round();

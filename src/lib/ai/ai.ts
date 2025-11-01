@@ -8,11 +8,8 @@ class Ai {
   private _device: AiDevice | null = null;
 
   public async init(initializer: ModelInitializer): Promise<void> {
-    if (initializer.useCpu()) {
-      this._device = await CpuAi.init(initializer);
-    } else {
-      this._device = await GpuAi.init(initializer);
-    }
+    this._device = initializer.useCpu() ? new CpuAi() : new GpuAi();
+    await this._device.init(initializer);
   }
 
   public initialized(): boolean {
