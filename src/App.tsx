@@ -42,6 +42,7 @@ export default function App() {
         const tensor = await ai.generateVector(file);
         const b = new Uint8Array(tensor);
         const enc = Base64.fromUint8Array(b, true);
+        console.log(enc);
 
         const url = new URL("http://localhost:8080/anime-search");
         const body = JSON.stringify({
@@ -62,6 +63,7 @@ export default function App() {
         setResult(s);
       } catch (e) {
         console.error(e);
+        setResult("error");
       }
     });
   }

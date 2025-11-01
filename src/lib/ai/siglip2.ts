@@ -1,42 +1,20 @@
 import {
   AutoProcessor,
-  CLIPPreTrainedModel,
-  PreTrainedModel,
-  type PretrainedModelOptions,
+  SiglipPreTrainedModel,
+  SiglipTextModel,
+  SiglipVisionModel,
 } from "@huggingface/transformers";
 import type { AiSelector } from "./ai-selector";
 
-class Siglip2PreTrainedModel extends PreTrainedModel {}
+class Siglip2PreTrainedModel extends SiglipPreTrainedModel {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Siglip2Model extends Siglip2PreTrainedModel {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Siglip2TextModel extends Siglip2PreTrainedModel {
-  static async from_pretrained(
-    pretrained_model_name_or_path: string,
-    options: PretrainedModelOptions = {},
-  ) {
-    return super.from_pretrained(pretrained_model_name_or_path, {
-      ...options,
-      // Update default model file name if not provided
-      model_file_name: options.model_file_name ?? "text_model",
-    });
-  }
-}
+class Siglip2TextModel extends SiglipTextModel {}
 
-class Siglip2VisionModel extends CLIPPreTrainedModel {
-  static async from_pretrained(
-    pretrained_model_name_or_path: string,
-    options: PretrainedModelOptions = {},
-  ) {
-    return super.from_pretrained(pretrained_model_name_or_path, {
-      ...options,
-      // Update default model file name if not provided
-      model_file_name: options.model_file_name ?? "vision_model",
-    });
-  }
-}
+class Siglip2VisionModel extends SiglipVisionModel {}
 
 export class Siglip2 implements AiSelector {
   public display() {
