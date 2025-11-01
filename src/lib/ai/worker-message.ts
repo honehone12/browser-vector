@@ -9,7 +9,6 @@ interface WorkerMessage {
 }
 
 export interface WorkerParams extends WorkerMessage {
-  display?: string | undefined;
   blob?: Blob | undefined;
 }
 

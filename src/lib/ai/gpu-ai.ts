@@ -7,22 +7,19 @@ import {
 import type { ModelInitializer } from "./model-initializer";
 import type { AiDevice } from "./ai-device";
 import { Base64 } from "js-base64";
+import { Siglip2GpuInitializer } from "./siglip2";
 
 export class GpuAi implements AiDevice {
   private _initializer: ModelInitializer | null = null;
   private _model: PreTrainedModel | null = null;
   private _processor: Processor | null = null;
 
-  public async init(initializer: ModelInitializer): Promise<void> {
+  public async init(): Promise<void> {
     if (this.initialized()) {
       return;
     }
 
-    if (initializer.useCpu()) {
-      throw new Error("unexpected cpu model");
-    }
-
-    this._initializer = initializer;
+    this._initializer = new Siglip2GpuInitializer();
     this._model = await this._initializer.model();
     this._processor = await this._initializer.processor();
   }

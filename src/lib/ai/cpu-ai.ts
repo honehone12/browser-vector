@@ -1,5 +1,6 @@
 import type { AiDevice } from "./ai-device";
 import type { ModelInitializer } from "./model-initializer";
+import { Siglip2CpuInitializer } from "./siglip2";
 import { WorkerCommand, type WorkerResult } from "./worker-message";
 
 type ResolveVector = (value: string) => void;
@@ -60,16 +61,12 @@ export class CpuAi implements AiDevice {
     }
   };
 
-  public async init(initializer: ModelInitializer): Promise<void> {
+  public async init(): Promise<void> {
     if (this.initialized()) {
       return;
     }
 
-    if (!initializer.useCpu()) {
-      throw new Error("unexpected cpu model");
-    }
-
-    this._initializer = initializer;
+    this._initializer = new Siglip2CpuInitializer();
     return new Promise((resolve, reject) => {
       const callbacks = {
         onSuccess: () => {
@@ -83,7 +80,6 @@ export class CpuAi implements AiDevice {
       this._worker.postMessage({
         id,
         command: WorkerCommand.initialize,
-        display: initializer.display(),
       });
     });
   }

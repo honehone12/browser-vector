@@ -1,5 +1,4 @@
 import { useEffect, useState, useTransition } from "react";
-import { Siglip2GpuInitializer, Siglip2CpuInitializer } from "./lib/ai/siglip2";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
 import ai from "./lib/ai/ai";
@@ -12,10 +11,7 @@ export default function App() {
 
   async function init() {
     try {
-      const initializer = navigator.gpu?.requestAdapter().features
-        ? new Siglip2GpuInitializer()
-        : new Siglip2CpuInitializer();
-      await ai.init(initializer);
+      await ai.init();
       seAitInitialized(ai.initialized());
       setAiStatus(ai.display() ?? "unknown");
     } catch (e) {

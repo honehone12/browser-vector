@@ -1,14 +1,15 @@
 import type { AiDevice } from "./ai-device";
-import type { ModelInitializer } from "./model-initializer";
 import { GpuAi } from "./gpu-ai";
 import { CpuAi } from "./cpu-ai";
 
 class Ai {
   private _device: AiDevice | null = null;
 
-  public async init(initializer: ModelInitializer): Promise<void> {
-    this._device = initializer.useCpu() ? new CpuAi() : new GpuAi();
-    await this._device.init(initializer);
+  public async init(): Promise<void> {
+    this._device = navigator.gpu?.requestAdapter().features
+      ? new GpuAi()
+      : new CpuAi();
+    await this._device.init();
   }
 
   public initialized(): boolean {

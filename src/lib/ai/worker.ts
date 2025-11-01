@@ -6,23 +6,10 @@ import {
 } from "@huggingface/transformers";
 import { WorkerCommand, type WorkerParams } from "./worker-message";
 import { Siglip2CpuInitializer } from "./siglip2";
-import { SiglipCpuInitializer } from "./siglip";
-import type { ModelInitializer } from "./model-initializer";
 import { Base64 } from "js-base64";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;
-
-function getInitializer(display: string | undefined): ModelInitializer {
-  switch (display) {
-    case "siglip-base-patch16-512-cpu":
-      return new SiglipCpuInitializer();
-    case "siglip2-base-patch16-512-cpu":
-      return new Siglip2CpuInitializer();
-    default:
-      throw new Error("could not find initializer");
-  }
-}
 
 self.onmessage = async (event: MessageEvent<WorkerParams>) => {
   const msg = event.data;
@@ -30,7 +17,7 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
     switch (msg.command) {
       case WorkerCommand.initialize:
         {
-          const initializer = getInitializer(msg.display);
+          const initializer = new Siglip2CpuInitializer();
           __model = await initializer.model();
           __processor = await initializer.processor();
           self.postMessage({
