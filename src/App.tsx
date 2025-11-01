@@ -1,9 +1,9 @@
 import { useEffect, useState, useTransition } from "react";
-import ai from "./lib/ai/ai";
-import { Siglip2, Siglip2Cpu } from "./lib/ai/siglip2";
+import { Siglip2GpuInitializer, Siglip2CpuInitializer } from "./lib/ai/siglip2";
 import FileForm from "./lib/components/FileForm";
 import Loading from "./lib/components/Loading";
 import { Base64 } from "js-base64";
+import ai from "./lib/ai/ai";
 
 export default function App() {
   const [aiInitialized, seAitInitialized] = useState(false);
@@ -13,10 +13,12 @@ export default function App() {
 
   async function init() {
     try {
-      const selector = navigator.gpu ? new Siglip2() : new Siglip2Cpu();
-      await ai.init(selector);
+      const initializer = navigator.gpu
+        ? new Siglip2GpuInitializer()
+        : new Siglip2CpuInitializer();
+      await ai.init(initializer);
       seAitInitialized(ai.initialized());
-      setAiStatus(ai.name() ?? "unknown");
+      setAiStatus(ai.display() ?? "unknown");
     } catch (e) {
       console.error(e);
       setAiStatus("failed to initialize ai model");
