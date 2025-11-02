@@ -1,12 +1,7 @@
-import {
-  PreTrainedModel,
-  Processor,
-  RawImage,
-  Tensor,
-} from "@huggingface/transformers";
+import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import { WorkerCommand, type WorkerParams } from "./worker-message";
 import { Siglip2CpuInitializer } from "./siglip2";
-import { Base64 } from "js-base64";
+import { siglipProcess } from "./singlip-impl";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;
@@ -35,23 +30,12 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
             throw new Error("empty message");
           }
 
-          const img = await RawImage.fromBlob(msg.blob);
-          const rgb = img.rgb();
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          const inputs = await __processor(rgb);
-          const { pooler_output }: { pooler_output: Tensor } =
-            await __model(inputs);
-          const raw = pooler_output.normalize().squeeze(0);
-          // for int8
-          const scale = 127;
-          const quantized = raw.mul(scale).round();
-          const b = new Uint8Array(quantized);
-          const enc = Base64.fromUint8Array(b, true);
+          const vector = await siglipProcess(__model, __processor, msg.blob);
 
           self.postMessage({
             id: msg.id,
             command: msg.command,
-            vector: enc,
+            vector,
           });
         }
         break;
