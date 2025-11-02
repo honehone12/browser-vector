@@ -1,7 +1,7 @@
 import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import { WorkerCommand, type WorkerParams } from "./worker-message";
 import { Siglip2CpuInitializer } from "./siglip2";
-import { siglipProcess } from "./singlip-impl";
+import { siglipProcess } from "./siglip-impl";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;

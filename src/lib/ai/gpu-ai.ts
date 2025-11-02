@@ -2,7 +2,7 @@ import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import type { ModelInitializer } from "./model-initializer";
 import type { AiDevice } from "./ai-device";
 import { Siglip2GpuInitializer } from "./siglip2";
-import { siglipProcess } from "./singlip-impl";
+import { siglipProcess } from "./siglip-impl";
 
 export class GpuAi implements AiDevice {
   private _initializer: ModelInitializer | null = null;
