@@ -9,7 +9,7 @@ import { Base64 } from "js-base64";
 
 export const SIGLIP_MAX_SIZE = 512;
 
-async function getRgb(file: File): Promise<RawImage> {
+async function getRgb(file: File, useWebWorker: boolean): Promise<RawImage> {
   const img = await RawImage.fromBlob(file);
   if (img.width <= SIGLIP_MAX_SIZE && img.height <= SIGLIP_MAX_SIZE) {
     return img.rgb();
@@ -17,7 +17,7 @@ async function getRgb(file: File): Promise<RawImage> {
 
   const resizedFile = await imageCompression(file, {
     maxWidthOrHeight: SIGLIP_MAX_SIZE,
-    useWebWorker: true,
+    useWebWorker,
   });
   const resizedImg = await RawImage.fromBlob(resizedFile);
   return resizedImg.rgb();
@@ -27,8 +27,9 @@ export async function siglipProcess(
   model: PreTrainedModel,
   processor: Processor,
   file: File,
+  useNewWorker: boolean,
 ): Promise<string> {
-  const rgb = getRgb(file);
+  const rgb = getRgb(file, useNewWorker);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const inputs = await processor(rgb);

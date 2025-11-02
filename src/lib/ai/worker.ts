@@ -30,7 +30,12 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
             throw new Error("empty message");
           }
 
-          const vector = await siglipProcess(__model, __processor, msg.file);
+          const vector = await siglipProcess(
+            __model,
+            __processor,
+            msg.file,
+            false,
+          );
 
           self.postMessage({
             id: msg.id,

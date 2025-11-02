@@ -36,6 +36,6 @@ export class GpuAi implements AiDevice {
       throw new Error("gpu ai is not initialized");
     }
 
-    return siglipProcess(this._model, this._processor, file);
+    return siglipProcess(this._model, this._processor, file, true);
   }
 }
