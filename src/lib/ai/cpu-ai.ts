@@ -31,33 +31,36 @@ export class CpuAi implements AiDevice {
   }
 
   private onMessage = (event: MessageEvent<WorkerResult>) => {
-    const result = event.data;
-    const callbacks = this._pendingMap.get(result.id);
-    this._pendingMap.delete(result.id);
-    if (!callbacks) {
-      console.error("unknown event id");
-      return;
-    }
+    try {
+      const result = event.data;
+      const callbacks = this._pendingMap.get(result.id);
+      if (!callbacks) {
+        throw new Error("unknown event id");
+      }
+      this._pendingMap.delete(result.id);
 
-    if (result.error) {
-      callbacks.onFail(result.error);
-      return;
-    }
+      if (result.error) {
+        callbacks.onFail(result.error);
+        return;
+      }
 
-    switch (result.command) {
-      case WorkerCommand.initialize:
-        (callbacks.onSuccess as Resolve)();
-        break;
-      case WorkerCommand.generate:
-        if (result.vector) {
+      switch (result.command) {
+        case WorkerCommand.initialize:
+          (callbacks.onSuccess as Resolve)();
+          break;
+        case WorkerCommand.generate:
+          if (!result.vector) {
+            throw new Error("empty result");
+          }
+
           (callbacks.onSuccess as ResolveVector)(result.vector);
-        } else {
-          callbacks.onFail("empty result");
-        }
-        break;
-      default:
-        callbacks.onFail("unknown event command");
-        break;
+          break;
+        default:
+          callbacks.onFail("unknown event command");
+          break;
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 

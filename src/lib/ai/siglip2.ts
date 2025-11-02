@@ -1,22 +1,24 @@
 import {
   AutoProcessor,
+  SiglipModel,
   SiglipPreTrainedModel,
   SiglipTextModel,
   SiglipVisionModel,
 } from "@huggingface/transformers";
-import type { AiSelector } from "./model-initializer";
+import type { ModelInitializer } from "./model-initializer";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Siglip2PreTrainedModel extends SiglipPreTrainedModel {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Siglip2Model extends Siglip2PreTrainedModel {}
+class Siglip2Model extends SiglipModel {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Siglip2TextModel extends SiglipTextModel {}
 
 class Siglip2VisionModel extends SiglipVisionModel {}
 
-export class Siglip2GpuInitializer implements AiSelector {
+export class Siglip2GpuInitializer implements ModelInitializer {
   public display() {
     return "siglip2-base-patch16-512-gpu";
   }
@@ -40,7 +42,7 @@ export class Siglip2GpuInitializer implements AiSelector {
   }
 }
 
-export class Siglip2CpuInitializer implements AiSelector {
+export class Siglip2CpuInitializer implements ModelInitializer {
   public display() {
     return "siglip2-base-patch16-512-cpu";
   }
