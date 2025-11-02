@@ -31,11 +31,11 @@ export class GpuAi implements AiDevice {
     return this._initializer ? this._initializer.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<string> {
+  public async generateVector(file: File): Promise<string> {
     if (!this._initializer || !this._model || !this._processor) {
       throw new Error("gpu ai is not initialized");
     }
 
-    return siglipProcess(this._model, this._processor, blob);
+    return siglipProcess(this._model, this._processor, file);
   }
 }

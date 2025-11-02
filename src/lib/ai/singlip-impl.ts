@@ -4,21 +4,31 @@ import {
   RawImage,
   Tensor,
 } from "@huggingface/transformers";
+import imageCompression from "browser-image-compression";
 import { Base64 } from "js-base64";
 
-export const SIGLIP_MAX_W = 512;
-export const SIGLIP_MAX_H = 512;
+export const SIGLIP_MAX_SIZE = 512;
+
+async function getRgb(file: File): Promise<RawImage> {
+  const img = await RawImage.fromBlob(file);
+  if (img.width <= SIGLIP_MAX_SIZE && img.height <= SIGLIP_MAX_SIZE) {
+    return img.rgb();
+  }
+
+  const resizedFile = await imageCompression(file, {
+    maxWidthOrHeight: SIGLIP_MAX_SIZE,
+    useWebWorker: true,
+  });
+  const resizedImg = await RawImage.fromBlob(resizedFile);
+  return resizedImg.rgb();
+}
 
 export async function siglipProcess(
   model: PreTrainedModel,
   processor: Processor,
-  blob: Blob,
+  file: File,
 ): Promise<string> {
-  const img = await RawImage.fromBlob(blob);
-  const rgb = img.rgb();
-  if (rgb.width > SIGLIP_MAX_W || rgb.height > SIGLIP_MAX_H) {
-    throw new Error("image over size limit");
-  }
+  const rgb = getRgb(file);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const inputs = await processor(rgb);

@@ -9,7 +9,7 @@ interface WorkerMessage {
 }
 
 export interface WorkerParams extends WorkerMessage {
-  blob?: Blob | undefined;
+  file?: File | undefined;
 }
 
 export interface WorkerResult extends WorkerMessage {

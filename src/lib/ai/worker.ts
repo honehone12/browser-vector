@@ -26,11 +26,11 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
           if (!__model || !__processor) {
             throw new Error("worker is not initialized");
           }
-          if (!msg.blob) {
+          if (!msg.file) {
             throw new Error("empty message");
           }
 
-          const vector = await siglipProcess(__model, __processor, msg.blob);
+          const vector = await siglipProcess(__model, __processor, msg.file);
 
           self.postMessage({
             id: msg.id,

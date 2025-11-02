@@ -20,12 +20,12 @@ class Ai {
     return this._device ? this._device.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<string> {
+  public async generateVector(file: File): Promise<string> {
     if (!this._device) {
       throw new Error("ai device is not initialized");
     }
 
-    return this._device.generateVector(blob);
+    return this._device.generateVector(file);
   }
 }
 

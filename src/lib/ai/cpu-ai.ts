@@ -94,7 +94,7 @@ export class CpuAi implements AiDevice {
     return this._initializer ? this._initializer.display() : null;
   }
 
-  public async generateVector(blob: Blob): Promise<string> {
+  public async generateVector(file: File): Promise<string> {
     if (!this._initialized || !this._initializer) {
       throw new Error("cpu ai is not initialized");
     }
@@ -109,7 +109,7 @@ export class CpuAi implements AiDevice {
       this._worker.postMessage({
         id,
         command: WorkerCommand.generate,
-        blob,
+        file,
       });
     });
   }
