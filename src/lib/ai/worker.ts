@@ -1,7 +1,7 @@
 import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import { WorkerCommand, type WorkerParams } from "./worker-message";
 import { Siglip2CpuInitializer } from "./siglip2";
-import { siglipProcess } from "./siglip-impl";
+import { vectorProcess } from "./vector-process";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;
@@ -30,7 +30,7 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
             throw new Error("empty message");
           }
 
-          const vector = await siglipProcess(
+          const vector = await vectorProcess(
             __model,
             __processor,
             msg.file,
