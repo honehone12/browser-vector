@@ -1,22 +1,5 @@
-import {
-  AutoProcessor,
-  SiglipModel,
-  SiglipPreTrainedModel,
-  SiglipTextModel,
-  SiglipVisionModel,
-} from "@huggingface/transformers";
+import { AutoProcessor, SiglipVisionModel } from "@huggingface/transformers";
 import type { ModelInitializer } from "./model-initializer";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Siglip2PreTrainedModel extends SiglipPreTrainedModel {}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Siglip2Model extends SiglipModel {}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class Siglip2TextModel extends SiglipTextModel {}
-
-class Siglip2VisionModel extends SiglipVisionModel {}
 
 export class Siglip2GpuInitializer implements ModelInitializer {
   public display() {
@@ -32,7 +15,7 @@ export class Siglip2GpuInitializer implements ModelInitializer {
   }
 
   public model() {
-    return Siglip2VisionModel.from_pretrained(this.name(), {
+    return SiglipVisionModel.from_pretrained(this.name(), {
       device: "webgpu",
     });
   }
@@ -56,7 +39,7 @@ export class Siglip2CpuInitializer implements ModelInitializer {
   }
 
   public model() {
-    return Siglip2VisionModel.from_pretrained(this.name());
+    return SiglipVisionModel.from_pretrained(this.name());
   }
 
   public processor() {
