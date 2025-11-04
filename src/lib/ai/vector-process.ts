@@ -29,7 +29,7 @@ export async function vectorProcess(
   file: File,
   useNewWorker: boolean,
 ): Promise<string> {
-  const rgb = getRgb(file, useNewWorker);
+  const rgb = await getRgb(file, useNewWorker);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const inputs = await processor(rgb);
