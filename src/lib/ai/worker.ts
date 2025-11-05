@@ -1,7 +1,7 @@
 import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import { WorkerCommand, type WorkerParams } from "./worker-message";
-import { Siglip2CpuInitializer } from "./siglip2";
 import { vectorProcess } from "./vector-process";
+import { ModelInitializers } from "./model-initializers";
 
 let __model: PreTrainedModel | null = null;
 let __processor: Processor | null = null;
@@ -12,7 +12,7 @@ self.onmessage = async (event: MessageEvent<WorkerParams>) => {
     switch (msg.command) {
       case WorkerCommand.initialize:
         {
-          const initializer = new Siglip2CpuInitializer();
+          const initializer = ModelInitializers.cpu();
           __model = await initializer.model();
           __processor = await initializer.processor();
           self.postMessage({

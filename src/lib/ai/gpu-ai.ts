@@ -1,8 +1,8 @@
 import { PreTrainedModel, Processor } from "@huggingface/transformers";
 import type { ModelInitializer } from "./model-initializer";
 import type { AiDevice } from "./ai-device";
-import { Siglip2GpuInitializer } from "./siglip2";
 import { vectorProcess } from "./vector-process";
+import { ModelInitializers } from "./model-initializers";
 
 export class GpuAi implements AiDevice {
   private _initializer: ModelInitializer | null = null;
@@ -14,7 +14,7 @@ export class GpuAi implements AiDevice {
       return;
     }
 
-    this._initializer = new Siglip2GpuInitializer();
+    this._initializer = ModelInitializers.gpu();
     this._model = await this._initializer.model();
     this._processor = await this._initializer.processor();
   }
