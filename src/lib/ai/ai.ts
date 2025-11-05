@@ -11,6 +11,7 @@ class Ai {
       return;
     }
 
+    // use try catch and set false finaly for implement retrying
     this._initializing = true;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const adapter = await navigator.gpu?.requestAdapter();
