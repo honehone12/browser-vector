@@ -1,6 +1,6 @@
 import type { AiDevice } from "./ai-device";
 import type { ModelInitializer } from "./model-initializer";
-import { Siglip2CpuInitializer } from "./siglip2";
+import { ModelInitializers } from "./model-initializers";
 import { WorkerCommand, type WorkerResult } from "./worker-message";
 
 type ResolveVector = (value: string) => void;
@@ -69,7 +69,7 @@ export class CpuAi implements AiDevice {
       return;
     }
 
-    this._initializer = new Siglip2CpuInitializer();
+    this._initializer = ModelInitializers.cpu();
     return new Promise((resolve, reject) => {
       const callbacks = {
         onSuccess: () => {
